@@ -12,7 +12,7 @@ database = dbclient[DB_NAME]
 
 
 user_data = database['users']
-
+col = database['shorten']
 
 
 async def present_user(user_id : int):
@@ -34,3 +34,6 @@ async def full_userbase():
 async def del_user(user_id: int):
     user_data.delete_one({'_id': user_id})
     return
+
+async def get_short(short):
+    return col.find_one({short: {'$exists': True}})

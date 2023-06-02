@@ -1,8 +1,4 @@
 #(©)CodeXBotz
-
-
-
-
 import os
 import asyncio
 from pyrogram import Client, filters, __version__
@@ -13,10 +9,19 @@ from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
 from bot import Bot
 from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT
 from helper_func import subscribed, encode, decode, get_messages
-from database.database import add_user, del_user, full_userbase, present_user
+from database.database import add_user, del_user, full_userbase, present_user , get_short
+from urllib.parse import quote
+from cloudscraper import create_scraper
 
+_shortener=os.environ.get("SHORTENER_SITE")
+_shortener_api=os.environ.get("SHORTENER_API")
+HOW_TO_DOWNLOAD=os.environ.get("HOW_TO_DOWNLOAD")
 
-
+async def short_url(longurl):
+    cget = create_scraper().request
+    res = cget('GET', f'https://{_shortener}/api?api={_shortener_api}&url={quote(longurl)}').json()
+    shorted = res['shortenedUrl']
+    return shorted
 
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
@@ -27,7 +32,7 @@ async def start_command(client: Client, message: Message):
         except:
             pass
     text = message.text
-    if len(text)>7:
+    if len(text)>7 and not "short" in text:
         try:
             base64_string = text.split(" ", 1)[1]
         except:
@@ -84,6 +89,63 @@ async def start_command(client: Client, message: Message):
             except:
                 pass
         return
+    elif "short" in text:
+        text=text.split(maxsplit=1)[1][5:]
+        result=get_short(text)
+        try:
+            result=result[text]
+        except:
+            return
+        temp_msg = await message.reply("Please wait...")
+        shortened_link=await short_url(result)
+        if not shortened_link:
+            return
+        try:
+            base64_string = result.split("=",maxsplit=1)[1]
+        except:
+            return
+        string = await decode(base64_string)
+        argument = string.split("-")
+        if len(argument) == 3:
+            try:
+                start = int(int(argument[1]) / abs(client.db_channel.id))
+                end = int(int(argument[2]) / abs(client.db_channel.id))
+            except:
+                return
+            if start <= end:
+                ids = range(start,end+1)
+            else:
+                ids = []
+                i = start
+                while True:
+                    ids.append(i)
+                    i -= 1
+                    if i < end:
+                        break
+        elif len(argument) == 2:
+            try:
+                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
+            except:
+                return
+        try:
+            messages = await get_messages(client, ids[:4])
+        except:
+            await message.reply_text("Something went wrong..!")
+            return
+        await temp_msg.delete()
+        txt=""
+        ctr=1
+        for msg in messages:
+            if len(ids)>4 and ctr == 5:
+                break
+            txt += f"➤ <code>{msg.caption}</code>\n"
+        if len(ids)>4:
+            txt += f"➤ <code>And More</code>\n"
+        await message.reply_text(f'''<b>Hey 👋 [{message.from_user.first_name}](tg://user?id={message.from_user.id}) , Your File(s) With Name(s)
+        
+{txt.strip()}
+
+Is Ready To Be Sent , Open The Below Link With Help Of How To Download Link To Get Your File(s)</b>''',reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("• Open Link •",url=shortened_link)],[InlineKeyboardButton("• How To Download •",url=HOW_TO_DOWNLOAD)]]))
     else:
         reply_markup = InlineKeyboardMarkup(
             [
