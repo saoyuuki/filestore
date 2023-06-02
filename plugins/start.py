@@ -141,7 +141,7 @@ async def start_command(client: Client, message: Message):
             txt += f"➤ <code>{msg.caption}</code>\n"
         if len(ids)>4:
             txt += f"➤ <code>And More</code>\n"
-        await message.reply_text(f'''<b>Hey 👋 [{message.from_user.first_name}](tg://user?id={message.from_user.id}) , Your File(s) With Name(s)
+        await message.reply_text(f'''<b>Hey 👋 <a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a> , Your File(s) With Name(s)
         
 {txt.strip()}
 
