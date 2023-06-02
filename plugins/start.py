@@ -91,7 +91,7 @@ async def start_command(client: Client, message: Message):
         return
     elif "short" in text:
         text=text.split(maxsplit=1)[1][5:]
-        result=get_short(text)
+        result=await get_short(text)
         try:
             result=result[text]
         except:
