@@ -71,9 +71,11 @@ async def start_command(client: Client, message: Message):
             try : caption = msg.caption.html 
             except: continue
             cap_txt += f'{i}. <code>{caption}</code>\n'
-        await message.reply_text(f'<b>{cap_txt.strip()}</b>' , quote=True , reply_markup=InlineKeyboardMarkup([
+        cap_txt +="\n🌟 Powered By :- <a href='https://t.me/Binge_Pirates'>Binge Pirates</a>"
+        pin_ms = await message.reply_text(f'<b>{cap_txt.strip()}</b>' , quote=True , reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton('Send Again ↻',callback_data=f'resend {text.split(maxsplit=1)[1]}')]
         ]))
+        await pin_ms.pin(both_sides=True)
         for msg in messages:
             if bool(CUSTOM_CAPTION) & bool(msg.document):
                 caption = CUSTOM_CAPTION.format(previouscaption = "" if not msg.caption else msg.caption.html, filename = msg.document.file_name)
@@ -95,8 +97,8 @@ async def start_command(client: Client, message: Message):
                 pass
         await client.send_message(message.chat.id , f'''<b>Thank You 🙏 For Using Our Channel To Download These Files.
 
-🌟 Powered By :- < a href='https://t.me/Binge_Pirates'>Binge Pirates</a></b>''',reply_markup=InlineKeyboardMarkup([
-    [InlineKeyboardButton('Channel ⭧',url='https://telegram.me/Binge_Pirates')]
+🌟 Powered By :- <a href='https://t.me/Binge_Pirates'>Binge Pirates</a></b>''', disable_web_page_preview=True ,reply_markup=InlineKeyboardMarkup([
+    [InlineKeyboardButton('Channel  ⭧',url='https://telegram.me/Binge_Pirates')]
 ]))
         await client.send_sticker(message.chat.id , 'CAACAgUAAxkBAAEDjqZlH-D08AwLuMm5gxrHW06y4qolNgACJgADQ3PJEk-nRpVqAvN6HgQ')
         return
