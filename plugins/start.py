@@ -72,7 +72,7 @@ async def start_command(client: Client, message: Message):
             except: continue
             cap_txt += f'{i}. <code>{caption}</code>\n'
         cap_txt +="\n🌟 Powered By :- <a href='https://t.me/Binge_Pirates'>Binge Pirates</a>"
-        pin_ms = await message.reply_text(f'<b>{cap_txt.strip()}</b>' , quote=True , reply_markup=InlineKeyboardMarkup([
+        pin_ms = await message.reply_text(f'<b>{cap_txt.strip()}</b>' , quote=True , disable_web_page_preview=True ,reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton('Send Again ↻',callback_data=f'resend {text.split(maxsplit=1)[1]}')]
         ]))
         await pin_ms.pin(both_sides=True)
