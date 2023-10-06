@@ -93,7 +93,7 @@ async def start_command(client: Client, message: Message):
                 await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
             except:
                 pass
-        await client.send_message(f'''<b>Thank You 🙏 For Using Our Channel To Download These Files.
+        await client.send_message(message.chat.id , f'''<b>Thank You 🙏 For Using Our Channel To Download These Files.
 
 🌟 Powered By :- < a href='https://t.me/Binge_Pirates'>Binge Pirates</a></b>''',reply_markup=InlineKeyboardMarkup([
     [InlineKeyboardButton('Channel ⭧',url='https://telegram.me/Binge_Pirates')]

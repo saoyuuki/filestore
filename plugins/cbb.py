@@ -28,4 +28,4 @@ async def cb_handler(client: Bot, query: CallbackQuery):
             pass
     elif data.startswith('resend'):
         code=data.split(maxsplit=1)[1]
-        await query.answer(f'https://telegram.me/Binge_Pirates_FilesBot?start={code}')
+        await query.answer(url=f'https://t.me/Binge_Pirates_FilesBot?start={code}')
