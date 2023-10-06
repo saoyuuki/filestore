@@ -28,7 +28,7 @@ async def start_command(client: Client, message: Message):
         except:
             pass
     text = message.text
-    if len(text)>7 and not "short" in text:
+    if len(text)>7 and "short" not in text:
         try:
             base64_string = text.split(" ", 1)[1]
         except:
@@ -63,9 +63,18 @@ async def start_command(client: Client, message: Message):
             await message.reply_text("Something went wrong..!")
             return
         await temp_msg.delete()
-
+        cap_txt=f"⭐️ Your Files Include :- \n\n"
+        for i , msg in enumerate(messages , start=1):
+            if i > 10: 
+                cap_txt += f'And More...\n'
+                break
+            try : caption = msg.caption.html 
+            except: continue
+            cap_txt += f'{i}. <code>{caption}</code>\n'
+        await message.reply_text(f'<b>{cap_txt.strip()}</b>' , quote=True , reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton('Send Again ↻',callback_data=f'resend {text.split(maxsplit=1)[1]}')]
+        ]))
         for msg in messages:
-
             if bool(CUSTOM_CAPTION) & bool(msg.document):
                 caption = CUSTOM_CAPTION.format(previouscaption = "" if not msg.caption else msg.caption.html, filename = msg.document.file_name)
             else:
@@ -84,6 +93,12 @@ async def start_command(client: Client, message: Message):
                 await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
             except:
                 pass
+        await client.send_message(f'''<b>Thank You 🙏 For Using Our Channel To Download These Files.
+
+🌟 Powered By :- < a href='https://t.me/Binge_Pirates'>Binge Pirates</a></b>''',reply_markup=InlineKeyboardMarkup([
+    [InlineKeyboardButton('Channel ⭧',url='https://telegram.me/Binge_Pirates')]
+]))
+        await client.send_sticker(message.chat.id , 'CAACAgUAAxkBAAEDjqZlH-D08AwLuMm5gxrHW06y4qolNgACJgADQ3PJEk-nRpVqAvN6HgQ')
         return
     elif "short" in text:
         text=text.split(maxsplit=1)[1][5:]
